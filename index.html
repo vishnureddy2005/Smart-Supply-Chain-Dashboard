@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Supply Chain Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #004080;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            color: #004080;
+            text-align: center;
+        }
+
+        .centered-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        label.required::after {
+            content: " *";
+            color: red;
+        }
+
+        button {
+            background: #004080;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0059b3;
+        }
+
+        canvas {
+            width: 90% !important;
+            height: 400px !important;
+            display: block;
+            margin: auto;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .delay-green {
+            color: green;
+        }
+
+        .delay-yellow {
+            color: orange;
+        }
+
+        .delay-red {
+            color: red;
+        }
+
+        .suggestion {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        #map {
+            width: 90%;
+            height: 400px;
+            margin: 20px auto;
+            border: 2px solid #004080;
+            border-radius: 8px;
+        }
+
+        #about,
+        #contact {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .about-paragraph {
+            max-width: 700px;
+            margin: auto;
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        .contact-info div {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="https://cdn.vectorstock.com/i/1000v/79/18/vd-logo-monogram-design-template-vector-38557918.jpg"
+            alt="Innovista Logo">
+        <h1>Smart Supply Chain Dashboard – Innovista</h1>
+        <nav><a href="#home">Home</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+    </header>
+
+    <section id="home">
+        <div class="centered-section">
+            <h2>Real‑Time Inventory</h2>
+            <canvas id="inventoryChart"></canvas>
+        </div>
+
+        <div class="centered-section">
+            <h2>Delivery Predictions (Latest 5)</h2>
+            <ul id="deliveryList"></ul>
+        </div>
+
+        <div class="centered-section">
+            <h2>Route Map</h2>
+            <div id="map"></div>
+        </div>
+
+        <div class="centered-section">
+            <h2>Add New Delivery</h2>
+            <form id="deliveryForm" class="form-container">
+                <div class="input-group">
+                    <label class="required">Product ID: <input type="number" id="productId" required></label>
+                </div>
+                <div class="input-group">
+                    <label class="required">Destination: <input type="text" id="destination" required></label>
+                </div>
+                <div class="input-group">
+                    <label class="required">Source Address: <input type="text" id="manualSource" required></label>
+                </div>
+                <div class="input-group">
+                    <label class="required">Weather:
+                        <select id="weather" required>
+                            <option>Clear</option>
+                            <option>Rainy</option>
+                            <option>Storm</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label class="required">Traffic:
+                        <select id="traffic" required>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label>Holiday: <input type="checkbox" id="holiday"></label>
+                </div>
+                <button type="submit">Submit Delivery</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>About Smart Supply Chain</h2>
+        <p class="about-paragraph">
+            The <strong>Smart Supply Chain Dashboard</strong> by Innovista empowers businesses to monitor inventory in
+            real-time, predict delivery delays, and streamline logistics with analytics and route visualization—ensuring
+            optimal operations end-to-end.
+        </p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Developer</h2>
+        <div class="contact-info">
+            <div><i class="fas fa-user"></i> Vishnuvardhanreddy Chintham – <i class="fas fa-envelope"></i> <a
+                    href="mailto:vishnuvardhanreddyr7@gmail.com">vishnuvardhanreddyr7@gmail.com</a></div>
+          
+        </div>
+    </section>
+
+    <!-- JavaScript Starts Here -->
+    <script>
+        let map, directionsService, directionsRenderer, inventoryChart;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 20.5937, lng: 78.9629 },
+                zoom: 5
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({ suppressPolylines: false, preserveViewport: false });
+            directionsRenderer.setMap(map);
+
+            fetchInventory();
+            fetchDeliveries();
+        }
+
+        function showRoute(sourceAddress, destinationAddress) {
+            directionsRenderer.set('directions', null);
+
+            directionsService.route({
+                origin: sourceAddress,
+                destination: destinationAddress,
+                travelMode: 'DRIVING'
+            }, (response, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+                } else {
+                    alert('Route not found: ' + status);
+                }
+            });
+        }
+
+        function fetchInventory() {
+            fetch('http://127.0.0.1:5000/products')
+                .then(r => r.json())
+                .then(data => {
+                    console.log('Fetched Inventory:', data);
+                    if (data.length === 0) {
+                        console.warn('No inventory data received.');
+                        return;
+                    }
+                    renderChart(data.map(p => p.product_name), data.map(p => p.stock_level));
+                })
+                .catch(err => console.error('Fetch Inventory Error:', err));
+        }
+
+        function renderChart(labels, values) {
+            const ctx = document.getElementById('inventoryChart').getContext('2d');
+            if (inventoryChart) inventoryChart.destroy();
+            inventoryChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets: [{ label: 'Stock Level', data: values, backgroundColor: 'rgba(0,64,128,0.7)' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function fetchDeliveries() {
+            fetch('http://127.0.0.1:5000/deliveries')
+                .then(r => r.json())
+                .then(data => {
+                    const list = document.getElementById('deliveryList');
+                    list.innerHTML = '';
+                    data.forEach(d => {
+                        const li = document.createElement('li');
+                        let cls = d.predicted_delay_minutes <= 30 ? 'delay-green' : d.predicted_delay_minutes <= 60 ? 'delay-yellow' : 'delay-red';
+                        let suggestion = cls === 'delay-green' ? 'On-time' : cls === 'delay-yellow' ? 'Consider alternate routes' : 'High delay—Reschedule';
+                        li.innerHTML = `From ${d.origin_address} to ${d.destination} – <span class="${cls}">${d.predicted_delay_minutes} min</span> <span class="suggestion">(${suggestion})</span>`;
+                        li.onclick = () => showRoute(d.origin_address, d.destination);
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        document.getElementById('deliveryForm').addEventListener('submit', e => {
+            e.preventDefault();
+
+            const productId = +document.getElementById('productId').value;
+            const destination = document.getElementById('destination').value;
+            const manualSource = document.getElementById('manualSource').value;
+            const weather = document.getElementById('weather').value;
+            const traffic = document.getElementById('traffic').value;
+            const holiday = document.getElementById('holiday').checked ? 1 : 0;
+
+            if (!manualSource || !destination) {
+                alert('Please enter both source and destination.');
+                return;
+            }
+
+            fetch('http://127.0.0.1:5000/add-delivery', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    product_id: productId,
+                    destination: destination,
+                    origin_address: manualSource,
+                    weather_condition: weather,
+                    traffic_level: traffic,
+                    holiday_flag: holiday
+                })
+            }).then(r => r.json()).then(data => {
+                Toastify({
+                    text: 'Added delivery successfully with expected time: ' + data.predicted_delay + ' min',
+                    duration: 4000,
+                    gravity: 'top',
+                    position: 'right',
+                    backgroundColor: '#28a745',
+                    close: true
+                }).showToast();
+
+                fetchDeliveries();
+                fetchInventory();
+                showRoute(manualSource, destination);
+            }).catch(err => {
+                alert('Error: ' + err);
+            });
+        });
+
+        setInterval(() => {
+            fetchInventory();
+            fetchDeliveries();
+        }, 5000);
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=Replace_Your_Key&callback=initMap"></script>
+
+</body>
+
+</html>
