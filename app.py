@@ -12,7 +12,7 @@ with open('delay_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Google Distance Matrix API Key
-GOOGLE_API_KEY = 'AIzaSyCLHyehvlGHt6bs9spz9fmcm8cA6dhdEvY'  # Your provided key
+GOOGLE_API_KEY = 'Replace_Your_Key'  # Your provided key
 
 # Get database connection
 def get_connection():
@@ -23,7 +23,7 @@ def get_connection():
         database='walmart_sparkathon'
     )
 
-# ✅ Inventory API
+#  Inventory API
 @app.route('/products', methods=['GET'])
 def get_products():
     try:
@@ -38,7 +38,7 @@ def get_products():
         if conn:
             conn.close()
 
-# ✅ Update stock API
+#Update stock API
 @app.route('/update-stock', methods=['POST'])
 def update_stock():
     try:
@@ -57,7 +57,7 @@ def update_stock():
         if conn:
             conn.close()
 
-# ✅ Add new delivery API with debug prints
+# Add new delivery API with debug prints
 @app.route('/add-delivery', methods=['POST'])
 def add_delivery():
     conn = None
@@ -110,7 +110,7 @@ def add_delivery():
         if conn:
             conn.close()
 
-# ✅ Deliveries API (only required fields)
+# Deliveries API (only required fields)
 @app.route('/deliveries', methods=['GET'])
 def get_deliveries():
     try:
